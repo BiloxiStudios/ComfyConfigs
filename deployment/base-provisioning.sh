@@ -109,6 +109,7 @@ function provisioning_start() {
         "${COMFYUI_DIR}/models/clip" \
         "${CLIP_MODELS[@]}"
 
+    provisioning_configure_comfyui
     provisioning_print_end
 }
 
@@ -245,6 +246,78 @@ function provisioning_download() {
              -e dotbytes="${3:-4M}" -P "$dest_dir" "$url" || \
         wget -q --show-progress -N -P "$dest_dir" "$url"
     fi
+}
+
+# Configure ComfyUI settings (API keys, etc.)
+function provisioning_configure_comfyui() {
+    if [[ -z "$COMFYUI_API_KEY" ]]; then
+        return 0
+    fi
+
+    printf "\nConfiguring ComfyUI API key...\n"
+
+    # Create user settings directory
+    local settings_dir="${COMFYUI_DIR}/user/default"
+    mkdir -p "$settings_dir"
+
+    # Create or update comfy.settings.json
+    local settings_file="${settings_dir}/comfy.settings.json"
+
+    if [[ -f "$settings_file" ]]; then
+        # Settings file exists, update it
+        # Use jq if available, otherwise use simple string replacement
+        if command -v jq &> /dev/null; then
+            local temp_file=$(mktemp)
+            jq --arg key "$COMFYUI_API_KEY" '.Comfy.Api.Key = $key' "$settings_file" > "$temp_file"
+            mv "$temp_file" "$settings_file"
+        else
+            # Fallback: read existing file and update or add the key
+            python3 -c "
+import json
+import sys
+
+try:
+    with open('$settings_file', 'r') as f:
+        settings = json.load(f)
+except:
+    settings = {}
+
+if 'Comfy' not in settings:
+    settings['Comfy'] = {}
+if 'Api' not in settings['Comfy']:
+    settings['Comfy']['Api'] = {}
+
+settings['Comfy']['Api']['Key'] = '$COMFYUI_API_KEY'
+
+with open('$settings_file', 'w') as f:
+    json.dump(settings, f, indent=2)
+" 2>/dev/null || {
+                # If python fails, create a basic JSON structure
+                cat > "$settings_file" << EOF
+{
+  "Comfy": {
+    "Api": {
+      "Key": "$COMFYUI_API_KEY"
+    }
+  }
+}
+EOF
+            }
+        fi
+    else
+        # Settings file doesn't exist, create it
+        cat > "$settings_file" << EOF
+{
+  "Comfy": {
+    "Api": {
+      "Key": "$COMFYUI_API_KEY"
+    }
+  }
+}
+EOF
+    fi
+
+    printf "ComfyUI API key configured successfully\n"
 }
 
 ### MAIN EXECUTION ###
