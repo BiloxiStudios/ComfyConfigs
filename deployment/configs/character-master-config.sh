@@ -49,15 +49,13 @@ UPSCALE_MODELS=(
     "https://huggingface.co/Comfy-Org/Real-ESRGAN_repackaged/resolve/main/RealESRGAN_x4plus.safetensors"
 )
 
-# Checkpoint Models - Flux Dev
+# Checkpoint Models - Flux Dev (all-in-one model from Comfy-Org)
 CHECKPOINT_MODELS=(
-    "https://huggingface.co/Kijai/flux-fp8/resolve/main/flux1-dev-fp8.safetensors"
+    "https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev-fp8.safetensors"
 )
 
-# CLIP Models - Flux text encoders
+# CLIP Models - Not needed with all-in-one Flux model
 CLIP_MODELS=(
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors"
-    "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors"
 )
 
 # Additional configuration options
