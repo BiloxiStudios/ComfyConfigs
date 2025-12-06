@@ -97,13 +97,17 @@ Scripts like `CharacterMasterSetup.sh` are simple wrappers that:
 
 - `HF_TOKEN`: HuggingFace API token for downloading gated models
 - `CIVITAI_TOKEN`: CivitAI API token for downloading models
+- `COMFYUI_API_KEY`: ComfyUI API key (from comfy.org) - automatically configured in ComfyUI settings
 
 Set these before running the provisioning script:
 ```bash
 export HF_TOKEN="your_token_here"
 export CIVITAI_TOKEN="your_token_here"
+export COMFYUI_API_KEY="your_comfyui_api_key"
 bash CharacterMasterSetup.sh
 ```
+
+**For Vast.ai**: Set these as environment variables in your instance template, and the provisioning script will automatically configure them.
 
 ### Configuration
 
