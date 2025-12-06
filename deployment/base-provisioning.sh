@@ -6,6 +6,11 @@
 
 set -e
 
+# Deactivate conda if active to prevent conflicts
+if command -v conda &> /dev/null; then
+    conda deactivate 2>/dev/null || true
+fi
+
 # Detect if running in Vast.ai environment or local
 if [[ -f /venv/main/bin/activate ]]; then
     source /venv/main/bin/activate
