@@ -6,13 +6,19 @@ This directory contains modular provisioning scripts for setting up ComfyUI envi
 
 ```
 deployment/
-├── base-provisioning.sh          # Core provisioning engine (based on Vast.ai)
-├── configs/                      # Workflow-specific configurations
-│   └── character-master-config.sh
-├── reference/                    # Reference scripts
+├── base-provisioning.sh              # Core provisioning engine (based on Vast.ai)
+├── configs/                          # Workflow-specific configurations
+│   ├── character-master-config.sh
+│   └── template-config.sh
+├── serverless/                       # Serverless-specific scripts
+│   ├── CharacterMasterServerless.sh
+│   └── reference/
+│       └── vast-ai-serverless-template.sh
+├── reference/                        # Reference scripts
 │   └── vast-ai-default.sh
-├── CharacterMasterSetup.sh       # Character Master workflow setup
-└── README.md                     # This file
+├── CharacterMasterSetup.sh           # Character Master workflow setup
+├── CharacterMasterProvisioning.sh    # Standalone provisioning for Vast.ai
+└── README.md                         # This file
 ```
 
 ## Quick Start
@@ -27,6 +33,35 @@ This will:
 - Install all required custom nodes
 - Download all necessary models (Qwen, Flux, ControlNet, etc.)
 - Set up the complete Character Master workflow environment
+
+### Vast.ai On-Demand Instances
+
+Set this environment variable in your Vast.ai template:
+
+```bash
+PROVISIONING_SCRIPT=https://raw.githubusercontent.com/BiloxiStudios/ComfyConfigs/main/deployment/CharacterMasterProvisioning.sh
+```
+
+Optional environment variables:
+```bash
+COMFYUI_API_KEY=your_comfy_org_api_key  # Auto-configure ComfyUI API key
+HF_TOKEN=your_huggingface_token         # For gated models
+CIVITAI_TOKEN=your_civitai_token        # For CivitAI models
+```
+
+### Vast.ai Serverless Instances
+
+For serverless deployments, use the serverless-specific script:
+
+```bash
+PROVISIONING_SCRIPT=https://raw.githubusercontent.com/BiloxiStudios/ComfyConfigs/main/deployment/serverless/CharacterMasterServerless.sh
+```
+
+The serverless script includes:
+- All Character Master models and custom nodes
+- Automatic disk space cleanup (runs every 10 minutes)
+- Removes output files older than 24 hours when disk space < 512MB
+- Same environment variable support (COMFYUI_API_KEY, HF_TOKEN, etc.)
 
 ## How It Works
 
